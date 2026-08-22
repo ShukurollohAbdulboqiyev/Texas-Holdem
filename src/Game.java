@@ -19,35 +19,62 @@ public class Game {
         }
     }
 
-    public void processAction(Player player, Action action, double amount) {
+    public boolean processAction(Player player, Action action, double amount) {
 
         switch (action) {
 
             case BET -> {
+                if (!validateAmount(amount) || amount > player.getChips()) {
+                    return false;
+                }
+
                 player.placeBet(amount);
                 table.addToPot(amount);
                 table.updateHighestBet(player);
+
+                return true;
             }
 
             case RAISE -> {
                 double additionalAmount = amount - player.getCurrentBet();
 
+                if (!validateAmount(additionalAmount)
+                        || additionalAmount > player.getChips()) {
+                    return false;
+                }
+
                 player.placeBet(additionalAmount);
                 table.addToPot(additionalAmount);
                 table.updateHighestBet(player);
+
+                return true;
             }
 
             case CALL -> {
-                // Noting here
+                double additionalAmount =
+                        table.getHighestBet() - player.getCurrentBet();
+
+                if (additionalAmount > player.getChips()) {
+                    return false;
+                }
+
+                player.placeBet(additionalAmount);
+                table.addToPot(additionalAmount);
+
+                return true;
             }
 
-            case CHECK -> {
-                // Nothing changes
+            case CHECK, FOLD -> {
+                return true;
             }
 
-            case FOLD -> {
-                // Folding logic will be added to Player
-            }
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + action
+            );
         }
+    }
+
+    public boolean validateAmount(double amount) {
+        return amount > 0;
     }
 }

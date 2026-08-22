@@ -44,39 +44,48 @@ public class ConsoleGame {
 
         for (Player player : table.getPlayers()) {
 
-            System.out.print(
-                    player.getName() + ", what would you like to do?"
-            );
+            boolean valid;
 
-            System.out.println("1. Bet");
-            System.out.println("2. Raise");
-            System.out.println("3. Call");
-            System.out.println("4. Check");
-            System.out.println("5. Fold");
+            do {
+                System.out.println("\n1. Bet");
+                System.out.println("2. Raise");
+                System.out.println("3. Call");
+                System.out.println("4. Check");
+                System.out.println("5. Fold");
 
-            int choice = scanner.nextInt();
+                System.out.print(
+                        player.getName() + ", what would you like to do?: "
+                );
 
-            Action action = switch (choice) {
-                case 1 -> Action.BET;
-                case 2 -> Action.RAISE;
-                case 3 -> Action.CALL;
-                case 4 -> Action.CHECK;
-                case 5 -> Action.FOLD;
-                default -> throw new IllegalArgumentException("Invalid action");
-            };
+                int choice = scanner.nextInt();
 
-            double amount = 0;
+                Action action = switch (choice) {
+                    case 1 -> Action.BET;
+                    case 2 -> Action.RAISE;
+                    case 3 -> Action.CALL;
+                    case 4 -> Action.CHECK;
+                    case 5 -> Action.FOLD;
+                    default -> throw new IllegalArgumentException("Invalid action");
+                };
 
-            if (action == Action.BET) {
-                System.out.print(player.getName() + ", how much do you want to bet?: ");
-                amount = scanner.nextDouble();
+                double amount = 0;
 
-            } else if (action == Action.RAISE) {
-                System.out.print(player.getName() + ", raise to: ");
-                amount = scanner.nextDouble();
-            }
+                if (action == Action.BET) {
+                    System.out.print("How much do you want to bet?: ");
+                    amount = scanner.nextDouble();
 
-            game.processAction(player, action, amount);
+                } else if (action == Action.RAISE) {
+                    System.out.print(player.getName() + ", raise to: ");
+                    amount = scanner.nextDouble();
+                }
+
+                valid = game.processAction(player, action, amount);
+
+                if (!valid) {
+                    System.out.println("Invalid action. Please try again.");
+                }
+
+            } while (!valid);
         }
     }
 }
