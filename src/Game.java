@@ -2,6 +2,7 @@ public class Game {
 
     private final Deck deck;
     private final Table table;
+    private int dealerIndex;
 
     public Game(Deck deck, Table table) {
         this.deck = deck;
@@ -24,7 +25,7 @@ public class Game {
         switch (action) {
 
             case BET -> {
-                if (!validateAmount(amount) || amount > player.getChips()) {
+                if (validateAmount(amount) || amount > player.getChips()) {
                     return false;
                 }
 
@@ -38,7 +39,7 @@ public class Game {
             case RAISE -> {
                 double additionalAmount = amount - player.getCurrentBet();
 
-                if (!validateAmount(additionalAmount)
+                if (validateAmount(additionalAmount)
                         || additionalAmount > player.getChips()) {
                     return false;
                 }
@@ -64,7 +65,12 @@ public class Game {
                 return true;
             }
 
-            case CHECK, FOLD -> {
+            case CHECK ->{
+                return table.getHighestBet() == player.getCurrentBet();
+            }
+
+            case FOLD -> {
+                player.setFolded(true);
                 return true;
             }
 
@@ -75,6 +81,48 @@ public class Game {
     }
 
     public boolean validateAmount(double amount) {
-        return amount > 0;
+        return !(amount > 0);
+    }
+
+    public boolean assignPosition(Position position){
+
+        int playerCount = table.getPlayers().size();
+
+        int bigBlindIndex;
+        int smallBlindIndex;
+
+        if(playerCount == 2){
+            smallBlindIndex = dealerIndex;
+            bigBlindIndex = (dealerIndex + 1) % playerCount;
+        }
+        else {
+            smallBlindIndex = (dealerIndex + 1) % playerCount;
+            bigBlindIndex = (dealerIndex + 2) % playerCount;
+        }
+
+        for(int i = 0; i< playerCount; i++){
+            Player player = table.getPlayers().get(i);
+
+            if (i == dealerIndex) {
+                player.setPosition(Position.DEALER);
+
+            } else if (i == smallBlindIndex) {
+                player.setPosition(Position.SMALL_BLIND);
+
+            } else if (i == bigBlindIndex) {
+                player.setPosition(Position.BIG_BLIND);
+            }
+        }
+
+        return true;
+    }
+
+    public void playBettingRound(GameStage gameStage){
+
+        switch (gameStage){
+            case PRE_FLOP -> {
+
+            }
+        }
     }
 }

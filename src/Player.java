@@ -7,6 +7,8 @@ public class Player {
     private double chips;
     private final List<Card> holeCards = new ArrayList<>();
     private double currentBet = 0.0;
+    private boolean isFolded = false;
+    private Position position;
 
     public Player(String name, double chips) {
         this.name = name;
@@ -29,6 +31,18 @@ public class Player {
         return currentBet;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setFolded(boolean isFolded) {
+        this.isFolded = isFolded;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     public void addCard(Card card){
         holeCards.add(card);
     }
@@ -38,4 +52,5 @@ public class Player {
         chips -= amount;
         currentBet += amount;
     }
+
 }

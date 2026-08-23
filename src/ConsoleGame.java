@@ -77,6 +77,11 @@ public class ConsoleGame {
                 } else if (action == Action.RAISE) {
                     System.out.print(player.getName() + ", raise to: ");
                     amount = scanner.nextDouble();
+                } else if (action == Action.CHECK) {
+                    System.out.println(player.getName() + ", checked.");
+                }
+                else if(action == Action.FOLD){
+                    System.out.println(player.getName() + " folded.");
                 }
 
                 valid = game.processAction(player, action, amount);
