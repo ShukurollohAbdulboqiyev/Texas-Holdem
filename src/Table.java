@@ -21,7 +21,7 @@ public class Table {
         return pot;
     }
 
-    public double getHighestBet(){
+    public double getHighestBet() {
         return highestBet;
     }
 
@@ -33,13 +33,12 @@ public class Table {
         communityCards.add(card);
     }
 
-    // money to the pot
-    public void addToPot(double amount){
+    public void addToPot(double amount) {
         pot += amount;
     }
 
-    public void updateHighestBet(Player player){
-        if(player.getCurrentBet() > highestBet){
+    public void updateHighestBet(Player player) {
+        if (player.getCurrentBet() > highestBet) {
             highestBet = player.getCurrentBet();
         }
     }

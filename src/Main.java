@@ -1,4 +1,5 @@
 public class Main {
+
     public static void main(String[] args) {
 
         ConsoleGame consoleGame = new ConsoleGame();
@@ -8,10 +9,6 @@ public class Main {
         Deck deck = new Deck();
         Game game = new Game(deck, table);
 
-        game.startGame();
-
-        consoleGame.showGameState(table);
-
-        consoleGame.processPlayerActions(game, table);
+        consoleGame.playGame(game, table);
     }
 }

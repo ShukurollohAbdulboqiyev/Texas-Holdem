@@ -35,6 +35,10 @@ public class Player {
         return position;
     }
 
+    public boolean isFolded() {
+        return isFolded;
+    }
+
     public void setFolded(boolean isFolded) {
         this.isFolded = isFolded;
     }
@@ -43,14 +47,12 @@ public class Player {
         this.position = position;
     }
 
-    public void addCard(Card card){
+    public void addCard(Card card) {
         holeCards.add(card);
     }
 
-    // placing a bet
-    public void placeBet(double amount){
+    public void placeBet(double amount) {
         chips -= amount;
         currentBet += amount;
     }
-
 }
