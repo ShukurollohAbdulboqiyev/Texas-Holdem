@@ -11,28 +11,23 @@ public class Game {
 
     private int playersActed;
 
-
     public Game(Deck deck, Table table) {
         this.deck = deck;
         this.table = table;
     }
 
-
     public void startGame() {
-
         deck.shuffle();
 
+        // Getting hole cards to the players
         for (int round = 0; round < 2; round++) {
-
             for (Player player : table.getPlayers()) {
                 player.addCard(deck.draw());
             }
         }
     }
 
-
     public boolean processAction(Player player, Action action, double amount) {
-
         if (player.isFolded()) {
             return false;
         }
@@ -40,7 +35,6 @@ public class Game {
         switch (action) {
 
             case BET -> {
-
                 if (table.getHighestBet() > 0) {
                     return false;
                 }
@@ -58,18 +52,14 @@ public class Game {
                 return true;
             }
 
-
             case RAISE -> {
-
                 if (amount <= table.getHighestBet()) {
                     return false;
                 }
 
-                double additionalAmount =
-                        amount - player.getCurrentBet();
+                double additionalAmount = amount - player.getCurrentBet();
 
-                if (validateAmount(additionalAmount)
-                        || additionalAmount > player.getChips()) {
+                if (validateAmount(additionalAmount) || additionalAmount > player.getChips()) {
                     return false;
                 }
 
@@ -82,12 +72,8 @@ public class Game {
                 return true;
             }
 
-
             case CALL -> {
-
-                double additionalAmount =
-                        table.getHighestBet()
-                                - player.getCurrentBet();
+                double additionalAmount = table.getHighestBet() - player.getCurrentBet();
 
                 if (additionalAmount < 0) {
                     return false;
@@ -105,11 +91,8 @@ public class Game {
                 return true;
             }
 
-
             case CHECK -> {
-
-                if (player.getCurrentBet()
-                        != table.getHighestBet()) {
+                if (player.getCurrentBet() != table.getHighestBet()) {
                     return false;
                 }
 
@@ -118,9 +101,7 @@ public class Game {
                 return true;
             }
 
-
             case FOLD -> {
-
                 player.setFolded(true);
 
                 playersActed++;
@@ -128,21 +109,15 @@ public class Game {
                 return true;
             }
 
-
-            default -> throw new IllegalStateException(
-                    "Unexpected value: " + action
-            );
+            default -> throw new IllegalStateException("Unexpected value: " + action);
         }
     }
 
-
     public boolean validateAmount(double amount) {
-        return !(amount > 0);
+        return amount > 0;
     }
 
-
     public boolean assignPosition() {
-
         int playerCount = table.getPlayers().size();
 
         if (playerCount < 2) {
@@ -152,36 +127,22 @@ public class Game {
         int bigBlindIndex;
         int smallBlindIndex;
 
-
         if (playerCount == 2) {
-
             smallBlindIndex = dealerIndex;
             bigBlindIndex = (dealerIndex + 1) % playerCount;
-
         } else {
-
-            smallBlindIndex =
-                    (dealerIndex + 1) % playerCount;
-
-            bigBlindIndex =
-                    (dealerIndex + 2) % playerCount;
+            smallBlindIndex = (dealerIndex + 1) % playerCount;
+            bigBlindIndex = (dealerIndex + 2) % playerCount;
         }
 
-
         for (int i = 0; i < playerCount; i++) {
-
             Player player = table.getPlayers().get(i);
 
             if (i == dealerIndex) {
-
                 player.setPosition(Position.DEALER);
-
             } else if (i == smallBlindIndex) {
-
                 player.setPosition(Position.SMALL_BLIND);
-
             } else if (i == bigBlindIndex) {
-
                 player.setPosition(Position.BIG_BLIND);
             }
         }
@@ -189,36 +150,23 @@ public class Game {
         return true;
     }
 
-
     public void playBettingRound(GameStage gameStage) {
-
         switch (gameStage) {
 
             case PRE_FLOP -> {
-
+                // No BB selected yet
                 int bigBlindIndex = -1;
 
                 playersActed = 0;
 
+                for (int i = 0; i < table.getPlayers().size(); i++) {
+                    Player player = table.getPlayers().get(i);
 
-                for (int i = 0;
-                     i < table.getPlayers().size();
-                     i++) {
-
-                    Player player =
-                            table.getPlayers().get(i);
-
-
-                    if (player.getPosition()
-                            == Position.SMALL_BLIND) {
-
+                    if (player.getPosition() == Position.SMALL_BLIND) {
                         player.placeBet(smallBlind);
                         table.addToPot(smallBlind);
                         table.updateHighestBet(player);
-
-                    } else if (player.getPosition()
-                            == Position.BIG_BLIND) {
-
+                    } else if (player.getPosition() == Position.BIG_BLIND) {
                         player.placeBet(bigBlind);
                         table.addToPot(bigBlind);
                         table.updateHighestBet(player);
@@ -227,88 +175,54 @@ public class Game {
                     }
                 }
 
-
                 if (bigBlindIndex == -1) {
                     return;
                 }
 
-
-                int nextIndex =
-                        (bigBlindIndex + 1)
-                                % table.getPlayers().size();
-
-
-                currentPlayer =
-                        table.getPlayers().get(nextIndex);
+                int nextIndex = (bigBlindIndex + 1) % table.getPlayers().size();
+                currentPlayer = table.getPlayers().get(nextIndex);
             }
         }
     }
-
 
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-
     public void moveToNextPlayer() {
-
-        int currentIndex =
-                table.getPlayers().indexOf(currentPlayer);
-
+        int currentIndex = table.getPlayers().indexOf(currentPlayer);
         int nextIndex;
 
         do {
-
-            nextIndex =
-                    (currentIndex + 1)
-                            % table.getPlayers().size();
-
+            nextIndex = (currentIndex + 1) % table.getPlayers().size();
             currentIndex = nextIndex;
+        } while (table.getPlayers().get(nextIndex).isFolded());
 
-        } while (
-                table.getPlayers()
-                        .get(nextIndex)
-                        .isFolded()
-        );
-
-
-        currentPlayer =
-                table.getPlayers().get(nextIndex);
+        currentPlayer = table.getPlayers().get(nextIndex);
     }
 
-
     public boolean isBettingRoundFinished() {
-
         int activePlayers = 0;
 
         for (Player player : table.getPlayers()) {
-
             if (!player.isFolded()) {
                 activePlayers++;
             }
         }
 
-
         if (activePlayers <= 1) {
             return true;
         }
-
 
         if (playersActed < activePlayers) {
             return false;
         }
 
-
         for (Player player : table.getPlayers()) {
-
-            if (!player.isFolded()
-                    && player.getCurrentBet()
-                    != table.getHighestBet()) {
-
+            if (!player.isFolded() && player.getCurrentBet() != table.getHighestBet()) {
                 return false;
             }
         }
-
 
         return true;
     }
