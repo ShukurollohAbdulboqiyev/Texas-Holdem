@@ -14,6 +14,7 @@ public class ConsoleGame {
         scanner.nextLine();
 
         for (int i = 0; i < playerCount; i++) {
+
             System.out.print("What is your name?: ");
             String name = scanner.nextLine();
 
@@ -24,6 +25,7 @@ public class ConsoleGame {
             Player player = gameSetup.createPlayer(name, chips);
             gameSetup.addPlayer(table, player);
         }
+
         return table;
     }
 
@@ -80,21 +82,19 @@ public class ConsoleGame {
     }
 
     public void playGame(Game game, Table table) {
+
         game.startGame();
         game.assignPosition();
+
         game.playBettingRound(GameStage.PRE_FLOP);
+        runBettingRound(game, table);
 
-        while (!game.isBettingRoundFinished()) {
-            Player currentPlayer = game.getCurrentPlayer();
-            showPlayerState(table, currentPlayer);
-
-            processPlayerAction(game, currentPlayer);
-            game.moveToNextPlayer();
-        }
+        game.playBettingRound(GameStage.FLOP);
+        runBettingRound(game, table);
     }
 
-
     public void processPlayerAction(Game game, Player player) {
+
         boolean valid;
 
         do {
@@ -116,32 +116,62 @@ public class ConsoleGame {
                 case 3 -> Action.CALL;
                 case 4 -> Action.CHECK;
                 case 5 -> Action.FOLD;
-                default -> throw new IllegalArgumentException("Invalid action");
+                default -> throw new IllegalArgumentException(
+                        "Invalid action"
+                );
             };
 
             double amount = 0;
 
             if (action == Action.BET) {
+
                 System.out.print("How much do you want to bet?: ");
                 amount = scanner.nextDouble();
 
             } else if (action == Action.RAISE) {
-                System.out.print(player.getName() + ", raise to: ");
+
+                System.out.print(
+                        player.getName() + ", raise to: "
+                );
                 amount = scanner.nextDouble();
-
-            } else if (action == Action.CHECK) {
-                System.out.println(player.getName() + " checked.");
-
-            } else if (action == Action.FOLD) {
-                System.out.println(player.getName() + " folded.");
             }
 
             valid = game.processAction(player, action, amount);
 
             if (!valid) {
-                System.out.println("Invalid action. Please try again.");
+
+                System.out.println(
+                        "Invalid action. Please try again."
+                );
+
+            } else {
+
+                if (action == Action.CHECK) {
+                    System.out.println(
+                            player.getName() + " checked."
+                    );
+
+                } else if (action == Action.FOLD) {
+                    System.out.println(
+                            player.getName() + " folded."
+                    );
+                }
             }
 
         } while (!valid);
+    }
+
+    public void runBettingRound(Game game, Table table) {
+
+        while (!game.isBettingRoundFinished()) {
+
+            Player currentPlayer = game.getCurrentPlayer();
+
+            showPlayerState(table, currentPlayer);
+
+            processPlayerAction(game, currentPlayer);
+
+            game.moveToNextPlayer();
+        }
     }
 }

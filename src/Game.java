@@ -3,7 +3,7 @@ public class Game {
     private final Deck deck;
     private final Table table;
 
-    private int dealerIndex;
+    private int dealerIndex = 0;
     private Player currentPlayer;
 
     private double smallBlind = 10.0;
@@ -28,6 +28,7 @@ public class Game {
     }
 
     public boolean processAction(Player player, Action action, double amount) {
+
         if (player.isFolded()) {
             return false;
         }
@@ -39,7 +40,7 @@ public class Game {
                     return false;
                 }
 
-                if (validateAmount(amount) || amount > player.getChips()) {
+                if (!validateAmount(amount) || amount > player.getChips()) {
                     return false;
                 }
 
@@ -59,7 +60,8 @@ public class Game {
 
                 double additionalAmount = amount - player.getCurrentBet();
 
-                if (validateAmount(additionalAmount) || additionalAmount > player.getChips()) {
+                if (!validateAmount(additionalAmount)
+                        || additionalAmount > player.getChips()) {
                     return false;
                 }
 
@@ -73,7 +75,8 @@ public class Game {
             }
 
             case CALL -> {
-                double additionalAmount = table.getHighestBet() - player.getCurrentBet();
+                double additionalAmount =
+                        table.getHighestBet() - player.getCurrentBet();
 
                 if (additionalAmount < 0) {
                     return false;
@@ -109,7 +112,9 @@ public class Game {
                 return true;
             }
 
-            default -> throw new IllegalStateException("Unexpected value: " + action);
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + action
+            );
         }
     }
 
@@ -151,10 +156,10 @@ public class Game {
     }
 
     public void playBettingRound(GameStage gameStage) {
+
         switch (gameStage) {
 
             case PRE_FLOP -> {
-                // No BB selected yet
                 int bigBlindIndex = -1;
 
                 playersActed = 0;
@@ -163,10 +168,13 @@ public class Game {
                     Player player = table.getPlayers().get(i);
 
                     if (player.getPosition() == Position.SMALL_BLIND) {
+
                         player.placeBet(smallBlind);
                         table.addToPot(smallBlind);
                         table.updateHighestBet(player);
+
                     } else if (player.getPosition() == Position.BIG_BLIND) {
+
                         player.placeBet(bigBlind);
                         table.addToPot(bigBlind);
                         table.updateHighestBet(player);
@@ -179,7 +187,25 @@ public class Game {
                     return;
                 }
 
-                int nextIndex = (bigBlindIndex + 1) % table.getPlayers().size();
+                int nextIndex =
+                        (bigBlindIndex + 1) % table.getPlayers().size();
+
+                currentPlayer = table.getPlayers().get(nextIndex);
+            }
+
+            case FLOP -> {
+                for (int i = 0; i < 3; i++) {
+                    table.addCommunityCard(deck.draw());
+                }
+
+                int nextIndex =
+                        (dealerIndex + 1) % table.getPlayers().size();
+
+                while (table.getPlayers().get(nextIndex).isFolded()) {
+                    nextIndex =
+                            (nextIndex + 1) % table.getPlayers().size();
+                }
+
                 currentPlayer = table.getPlayers().get(nextIndex);
             }
         }
@@ -194,8 +220,11 @@ public class Game {
         int nextIndex;
 
         do {
-            nextIndex = (currentIndex + 1) % table.getPlayers().size();
+            nextIndex =
+                    (currentIndex + 1) % table.getPlayers().size();
+
             currentIndex = nextIndex;
+
         } while (table.getPlayers().get(nextIndex).isFolded());
 
         currentPlayer = table.getPlayers().get(nextIndex);
@@ -219,7 +248,8 @@ public class Game {
         }
 
         for (Player player : table.getPlayers()) {
-            if (!player.isFolded() && player.getCurrentBet() != table.getHighestBet()) {
+            if (!player.isFolded()
+                    && player.getCurrentBet() != table.getHighestBet()) {
                 return false;
             }
         }
