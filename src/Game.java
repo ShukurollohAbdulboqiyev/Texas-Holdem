@@ -1,5 +1,4 @@
 public class Game {
-
     private final Deck deck;
     private final Table table;
 
@@ -36,10 +35,11 @@ public class Game {
         switch (action) {
 
             case BET -> {
+                // If someone already bet then you can only raise or fold
                 if (table.getHighestBet() > 0) {
                     return false;
                 }
-
+                //If the amount is invalid OR the amount is more than the player's chips, reject the action.
                 if (!validateAmount(amount) || amount > player.getChips()) {
                     return false;
                 }
@@ -54,12 +54,15 @@ public class Game {
             }
 
             case RAISE -> {
+                // raise has to be more than the current bet/highest amount
                 if (amount <= table.getHighestBet()) {
                     return false;
                 }
 
+                // find how much the player have to raise
                 double additionalAmount = amount - player.getCurrentBet();
 
+                // Reject if amount is invalid or player lacks enough chips
                 if (!validateAmount(additionalAmount)
                         || additionalAmount > player.getChips()) {
                     return false;
@@ -69,14 +72,14 @@ public class Game {
                 table.addToPot(additionalAmount);
                 table.updateHighestBet(player);
 
+                // Reset count because players must respond to the raise
                 playersActed = 1;
 
                 return true;
             }
 
             case CALL -> {
-                double additionalAmount =
-                        table.getHighestBet() - player.getCurrentBet();
+                double additionalAmount = table.getHighestBet() - player.getCurrentBet();
 
                 if (additionalAmount < 0) {
                     return false;
@@ -125,6 +128,7 @@ public class Game {
     public boolean assignPosition() {
         int playerCount = table.getPlayers().size();
 
+        // there has to be at leats two players
         if (playerCount < 2) {
             return false;
         }
@@ -140,6 +144,7 @@ public class Game {
             bigBlindIndex = (dealerIndex + 2) % playerCount;
         }
 
+        // find the BB, SB and the Dealer
         for (int i = 0; i < playerCount; i++) {
             Player player = table.getPlayers().get(i);
 
@@ -160,6 +165,7 @@ public class Game {
         switch (gameStage) {
 
             case PRE_FLOP -> {
+                // -1 means no Big Blind index has been found yet
                 int bigBlindIndex = -1;
 
                 playersActed = 0;
@@ -168,13 +174,11 @@ public class Game {
                     Player player = table.getPlayers().get(i);
 
                     if (player.getPosition() == Position.SMALL_BLIND) {
-
                         player.placeBet(smallBlind);
                         table.addToPot(smallBlind);
                         table.updateHighestBet(player);
 
                     } else if (player.getPosition() == Position.BIG_BLIND) {
-
                         player.placeBet(bigBlind);
                         table.addToPot(bigBlind);
                         table.updateHighestBet(player);
@@ -183,13 +187,15 @@ public class Game {
                     }
                 }
 
+                // Stop if no Big Blind was found
                 if (bigBlindIndex == -1) {
                     return;
                 }
 
-                int nextIndex =
-                        (bigBlindIndex + 1) % table.getPlayers().size();
+                // Find the player immediately after the Big Blind
+                int nextIndex = (bigBlindIndex + 1) % table.getPlayers().size();
 
+                // Make that player the current player
                 currentPlayer = table.getPlayers().get(nextIndex);
             }
 
@@ -197,13 +203,11 @@ public class Game {
                 for (int i = 0; i < 3; i++) {
                     table.addCommunityCard(deck.draw());
                 }
-
-                int nextIndex =
-                        (dealerIndex + 1) % table.getPlayers().size();
+                // Find the player immediately after the Dealer
+                int nextIndex = (dealerIndex + 1) % table.getPlayers().size();
 
                 while (table.getPlayers().get(nextIndex).isFolded()) {
-                    nextIndex =
-                            (nextIndex + 1) % table.getPlayers().size();
+                    nextIndex = (nextIndex + 1) % table.getPlayers().size();
                 }
 
                 currentPlayer = table.getPlayers().get(nextIndex);
@@ -220,8 +224,7 @@ public class Game {
         int nextIndex;
 
         do {
-            nextIndex =
-                    (currentIndex + 1) % table.getPlayers().size();
+            nextIndex = (currentIndex + 1) % table.getPlayers().size();
 
             currentIndex = nextIndex;
 
@@ -248,8 +251,7 @@ public class Game {
         }
 
         for (Player player : table.getPlayers()) {
-            if (!player.isFolded()
-                    && player.getCurrentBet() != table.getHighestBet()) {
+            if (!player.isFolded()&& player.getCurrentBet() != table.getHighestBet()) {
                 return false;
             }
         }

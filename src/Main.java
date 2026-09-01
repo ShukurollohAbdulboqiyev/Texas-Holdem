@@ -4,6 +4,7 @@ public class Main {
 
         ConsoleGame consoleGame = new ConsoleGame();
 
+        // asking and creating/adding players and preparing the table.
         Table table = consoleGame.setupGame();
 
         Deck deck = new Deck();

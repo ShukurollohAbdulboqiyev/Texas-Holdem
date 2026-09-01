@@ -6,7 +6,6 @@ public class ConsoleGame {
     private final GameSetup gameSetup = new GameSetup();
 
     public Table setupGame() {
-
         Table table = gameSetup.createTable();
 
         System.out.print("How many players are playing?: ");
@@ -14,7 +13,6 @@ public class ConsoleGame {
         scanner.nextLine();
 
         for (int i = 0; i < playerCount; i++) {
-
             System.out.print("What is your name?: ");
             String name = scanner.nextLine();
 
@@ -27,27 +25,6 @@ public class ConsoleGame {
         }
 
         return table;
-    }
-
-    public void showGameState(Table table) {
-
-        System.out.println("\n--- GAME STATE ---");
-
-        for (Player player : table.getPlayers()) {
-
-            System.out.println(
-                    player.getName()
-                            + " | Position: "
-                            + player.getPosition()
-                            + " | Chips: $"
-                            + player.getChips()
-                            + " | Bet: $"
-                            + player.getCurrentBet()
-            );
-        }
-
-        System.out.println("Pot: $" + table.getPot());
-        System.out.println("Highest bet: $" + table.getHighestBet());
     }
 
     public void showPlayerState(Table table, Player player) {
@@ -164,7 +141,6 @@ public class ConsoleGame {
     public void runBettingRound(Game game, Table table) {
 
         while (!game.isBettingRoundFinished()) {
-
             Player currentPlayer = game.getCurrentPlayer();
 
             showPlayerState(table, currentPlayer);
