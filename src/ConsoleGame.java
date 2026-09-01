@@ -56,10 +56,13 @@ public class ConsoleGame {
         System.out.println(
                 "Highest bet: $" + table.getHighestBet()
         );
+
+        System.out.println(
+                "Community cards: " + table.getCommunityCards()
+        );
     }
 
     public void playGame(Game game, Table table) {
-
         game.startGame();
         game.assignPosition();
 
@@ -67,6 +70,12 @@ public class ConsoleGame {
         runBettingRound(game, table);
 
         game.playBettingRound(GameStage.FLOP);
+        runBettingRound(game, table);
+
+        game.playBettingRound(GameStage.TURN);
+        runBettingRound(game, table);
+
+        game.playBettingRound(GameStage.RIVER);
         runBettingRound(game, table);
     }
 

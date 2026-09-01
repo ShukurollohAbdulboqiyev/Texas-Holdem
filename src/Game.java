@@ -161,7 +161,6 @@ public class Game {
     }
 
     public void playBettingRound(GameStage gameStage) {
-
         switch (gameStage) {
 
             case PRE_FLOP -> {
@@ -200,6 +199,7 @@ public class Game {
             }
 
             case FLOP -> {
+                playersActed = 0;
                 for (int i = 0; i < 3; i++) {
                     table.addCommunityCard(deck.draw());
                 }
@@ -212,6 +212,20 @@ public class Game {
 
                 currentPlayer = table.getPlayers().get(nextIndex);
             }
+
+            case TURN, RIVER -> {
+                playersActed = 0;
+                table.addCommunityCard(deck.draw());
+
+                int nextIndex = (dealerIndex + 1) % table.getPlayers().size();
+
+                while(table.getPlayers().get(nextIndex).isFolded()){
+                    nextIndex = (nextIndex +1) % table.getPlayers().size();
+                }
+
+                currentPlayer = table.getPlayers().get(nextIndex);
+            }
+
         }
     }
 
