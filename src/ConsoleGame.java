@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ConsoleGame {
@@ -7,18 +8,45 @@ public class ConsoleGame {
 
     public Table setupGame() {
         Table table = gameSetup.createTable();
+        final int MAX_PLAYERS = 10;
+        final int MIN_PLAYERS = 2;
+        final double MIN_CHIPS = 10.0;
+        final double MAX_CHIPS = 10000.0;
+        int playerCount = 0;
+        double chips = 0.0;
 
-        System.out.print("How many players are playing?: ");
-        int playerCount = scanner.nextInt();
-        scanner.nextLine();
+        do {
+           try {
+               System.out.print("How many players are playing?: ");
+               playerCount = scanner.nextInt();
+               scanner.nextLine();
+           }catch (InputMismatchException e){
+               scanner.nextLine();
+               System.out.println("Wrong Input. Try Again");
+           }
+
+        }while(playerCount < MIN_PLAYERS || playerCount > MAX_PLAYERS);
 
         for (int i = 0; i < playerCount; i++) {
             System.out.print("What is your name?: ");
             String name = scanner.nextLine();
 
-            System.out.print("How much money do you want to bring? $: ");
-            double chips = scanner.nextDouble();
-            scanner.nextLine();
+            do {
+                try{
+                    System.out.print("How much money do you want to bring? $: ");
+                    chips = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    if (chips < MIN_CHIPS) {
+                        System.out.println("The minimum buy-in is $" + MIN_CHIPS);
+                    } else if (chips > MAX_CHIPS) {
+                        System.out.println("The maximum buy-in is $" + MAX_CHIPS);
+                    }
+                }catch (InputMismatchException e){
+                    scanner.nextLine();
+                    System.out.println("The amount should be in numeric numbers");
+                }
+            }while(chips < MIN_CHIPS || chips > MAX_CHIPS);
 
             Player player = gameSetup.createPlayer(name, chips);
             gameSetup.addPlayer(table, player);
