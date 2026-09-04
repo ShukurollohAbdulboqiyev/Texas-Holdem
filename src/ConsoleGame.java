@@ -109,7 +109,8 @@ public class ConsoleGame {
 
     public void processPlayerAction(Game game, Player player) {
 
-        boolean valid;
+        boolean valid = false;
+        int choice = 0;
 
         do {
             System.out.println("\n1. Bet");
@@ -122,7 +123,18 @@ public class ConsoleGame {
                     player.getName() + ", what would you like to do?: "
             );
 
-            int choice = scanner.nextInt();
+            try{
+                choice = scanner.nextInt();
+            }catch (InputMismatchException e){
+                scanner.nextLine();
+                System.out.println("Wrong Input. Only 1-5 is allowed.");
+                continue;
+            }
+
+            if(choice < 1 || choice > 5){
+                System.out.println("Look at the console and realize that you can only choose from 1-5");
+                continue;
+            }
 
             Action action = switch (choice) {
                 case 1 -> Action.BET;

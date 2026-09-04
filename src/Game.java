@@ -40,7 +40,7 @@ public class Game {
                     return false;
                 }
                 //If the amount is invalid OR the amount is more than the player's chips, reject the action.
-                if (!validateAmount(amount) || amount > player.getChips()) {
+                if (validateAmount(amount) || amount > player.getChips()) {
                     return false;
                 }
 
@@ -63,7 +63,7 @@ public class Game {
                 double additionalAmount = amount - player.getCurrentBet();
 
                 // Reject if amount is invalid or player lacks enough chips
-                if (!validateAmount(additionalAmount)
+                if (validateAmount(additionalAmount)
                         || additionalAmount > player.getChips()) {
                     return false;
                 }
@@ -122,7 +122,7 @@ public class Game {
     }
 
     public boolean validateAmount(double amount) {
-        return amount > 0;
+        return !(amount > 0);
     }
 
     public boolean assignPosition() {
