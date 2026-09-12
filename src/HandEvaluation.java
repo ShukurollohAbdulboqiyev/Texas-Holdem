@@ -3,7 +3,6 @@ import java.util.*;
 public class HandEvaluation {
 
     public HandRank evaluateHand(Player player, Table table) {
-
         List<Card> cards = new ArrayList<>();
         Map<Rank, Integer> rankCount = new HashMap<>();
 
@@ -93,4 +92,84 @@ public class HandEvaluation {
                 && values.contains(2)
                 && values.contains(3);
     }
+
+    private boolean hasFourOfAKind(Map<Rank, Integer>rankCount){
+        for(int count : rankCount.values()){
+            if(count == 4){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFullHouse(Map<Rank, Integer> rankCount) {
+        int threeCount = 0;
+        int pairs = 0;
+
+        for (int count : rankCount.values()) {
+            if (count >= 3) {
+                threeCount++;
+            } else if (count == 2) {
+                pairs++;
+            }
+        }
+
+        return threeCount >= 1 && (pairs >= 1 || threeCount >= 2);
+    }
+
+    private boolean hasFlush(List<Card> cards){
+        Map<Suit, Integer> suitCount = new HashMap<>();
+
+        // Count cards of each suit
+        for (Card card : cards) {
+            Suit suit = card.getSuit();
+            int count = suitCount.getOrDefault(suit, 0);
+            suitCount.put(suit, count + 1);
+        }
+
+        for (int count : suitCount.values()){
+            if(count >= 5){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasThreeOfAKind(Map<Rank, Integer> rankCount){
+        for (int count : rankCount.values()){
+            if(count == 3){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasTwoPair(Map<Rank, Integer> rankCount){
+        int pairCount = 0;
+
+        for(int card : rankCount.values()){
+            if(card == 2){
+                pairCount++;
+            }
+        }
+
+        return pairCount == 2;
+    }
+
+    private boolean hasPair(Map<Rank, Integer> rankCount){
+        int pairCount = 0;
+
+        for(int card : rankCount.values()){
+            if(card == 2){
+                pairCount++;
+            }
+        }
+
+        return pairCount == 1;
+    }
+
+
+
 }
