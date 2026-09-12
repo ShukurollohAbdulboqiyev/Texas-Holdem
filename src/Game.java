@@ -226,6 +226,17 @@ public class Game {
                 currentPlayer = table.getPlayers().get(nextIndex);
             }
 
+            case SHOWDOWN -> {
+                HandEvaluation handEvaluation = new HandEvaluation();
+
+                for (Player player : table.getPlayers()) {
+                    if (!player.isFolded()) {
+                        HandRank handRank = handEvaluation.evaluateHand(player, table);
+                        System.out.println(player.getName() + ": " + handRank);
+                    }
+                }
+            }
+
         }
     }
 

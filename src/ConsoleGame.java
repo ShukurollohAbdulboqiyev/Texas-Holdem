@@ -105,6 +105,8 @@ public class ConsoleGame {
 
         game.playBettingRound(GameStage.RIVER);
         runBettingRound(game, table);
+
+        game.playBettingRound(GameStage.SHOWDOWN);
     }
 
     public void processPlayerAction(Game game, Player player) {

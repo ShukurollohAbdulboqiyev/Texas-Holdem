@@ -17,7 +17,63 @@ public class HandEvaluation {
             rankCount.put(rank, count + 1);
         }
 
-        return null;
+        if(hasRoyalFlush(cards)){
+            return HandRank.ROYAL_FLUSH;
+        }
+
+        if(hasStraightFlush(cards)){
+            return HandRank.STRAIGHT_FLUSH;
+        }
+
+        if(hasFourOfAKind(rankCount)){
+            return HandRank.FOUR_OF_A_KIND;
+        }
+
+        if(hasFullHouse(rankCount)){
+            return HandRank.FULL_HOUSE;
+        }
+
+        if(hasFlush(cards)){
+            return HandRank.FLUSH;
+        }
+
+        if(hasStraight(cards)){
+            return HandRank.STRAIGHT;
+        }
+
+        if(hasThreeOfAKind(rankCount)){
+            return HandRank.THREE_OF_A_KIND;
+        }
+
+        if (hasTwoPair(rankCount)){
+            return HandRank.TWO_PAIR;
+        }
+
+        if(hasPair(rankCount)){
+            return HandRank.PAIR;
+        }
+
+        return HandRank.HIGH_CARD;
+    }
+
+    private boolean hasRoyalFlush(List<Card> cards) {
+        Map<Suit, List<Rank>> suitRanks = new HashMap<>();
+
+        for (Card card : cards) {
+            suitRanks.computeIfAbsent(card.getSuit(), suit -> new ArrayList<>()).add(card.getRank());
+        }
+
+        for (List<Rank> ranks : suitRanks.values()) {
+            if (ranks.contains(Rank.TEN)
+                    && ranks.contains(Rank.JACK)
+                    && ranks.contains(Rank.QUEEN)
+                    && ranks.contains(Rank.KING)
+                    && ranks.contains(Rank.ACE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean hasStraightFlush(List<Card> cards) {
@@ -169,7 +225,4 @@ public class HandEvaluation {
 
         return pairCount == 1;
     }
-
-
-
 }
