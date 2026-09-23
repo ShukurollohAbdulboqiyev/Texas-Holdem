@@ -3,5 +3,6 @@ public enum Action {
     RAISE,
     CALL,
     CHECK,
-    FOLD
+    FOLD,
+    ALL_IN
 }

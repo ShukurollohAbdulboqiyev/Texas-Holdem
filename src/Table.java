@@ -42,4 +42,26 @@ public class Table {
             highestBet = player.getCurrentBet();
         }
     }
+
+    public void resetBettingRound() {
+        highestBet = 0.0;
+
+        for (Player player : players) {
+            player.resetForNewStreet();
+        }
+    }
+
+    public void resetForNewHand() {
+        pot = 0.0;
+        highestBet = 0.0;
+        communityCards.clear();
+
+        for (Player player : players) {
+            player.resetForNewHand();
+        }
+    }
+
+    public void clearPot() {
+        pot = 0.0;
+    }
 }
