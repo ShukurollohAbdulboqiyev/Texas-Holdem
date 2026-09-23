@@ -2,24 +2,24 @@
 
 A Texas Hold'em poker game built in Java.
 
-This project is being developed as an object-oriented Java application with the goal of eventually becoming an interactive web-based poker game.
+The project is being built as an object-oriented Java application, with the goal of eventually turning it into a proper web-based poker game.
 
 ## Current Features
 
-- 52-card deck
-- Card ranks and suits
-- Deck shuffling
-- Drawing cards
-- Multiple players
-- Player hole cards
-- Player chip management
-- Poker table
-- Pot management
-- Betting
-- Raising
-- Tracking the highest bet
-- Basic console interface
-- Game and UI logic separated for future web development
+* 52-card deck
+* Card ranks and suits
+* Deck shuffling
+* Drawing cards
+* Multiple players
+* Player hole cards
+* Player chip management
+* Poker table
+* Pot management
+* Betting
+* Raising
+* Tracking the highest bet
+* Basic console interface
+* Game logic separated from the UI
 
 ## Project Structure
 
@@ -31,86 +31,108 @@ src/
 ├── Deck.java
 ├── Game.java
 ├── GameSetup.java
+├── HandComparator.java
+├── HandEvaluation.java
+├── HandResult.java
 ├── Main.java
 ├── Player.java
 ├── Rank.java
 ├── Suit.java
 └── Table.java
-Main Classes
+```
 
-Player
-Stores player information such as name, chips, hole cards, and current bet.
+## Main Classes
 
-Table
-Manages players, community cards, the pot, and the highest bet.
+**Player**
+Stores player information like name, chips, hole cards, bets, position, and player status.
 
-Deck
-Creates, shuffles, and deals cards.
+**Table**
+Keeps track of the players, community cards, pot, and highest bet.
 
-Game
-Contains the core poker game logic and processes player actions.
+**Deck**
+Creates the 52-card deck, shuffles it, and deals cards.
 
-Action
+**Game**
+Handles the main poker logic, game stages, betting rounds, and player actions.
+
+**HandEvaluation**
+Checks the player's cards and determines what poker hand they have.
+
+**HandResult**
+Stores the result of a hand evaluation, including the hand type and values used to compare hands.
+
+**HandComparator**
+Compares two evaluated poker hands to determine which one is stronger.
+
+**Action**
 Defines the possible poker actions:
 
+```text
 BET
 CALL
 RAISE
 CHECK
 FOLD
+ALL_IN
+```
 
-GameSetup
-Responsible for creating and assembling the initial game objects.
+**GameSetup**
+Creates and sets up the initial game objects.
 
-ConsoleGame
-Temporary console interface used to interact with and test the game.
+**ConsoleGame**
+The temporary console interface used to interact with and test the game.
 
-Architecture
+## Architecture
 
-The project is intentionally structured so that the poker logic is separated from the user interface.
+The main idea is to keep the poker logic separate from the interface.
 
+```text
 Console Interface
        ↓
       Game
      ↙    ↘
  Player   Table
     ↓       ↓
-   Cards   Pot
+  Cards    Pot
+```
 
-The current console interface is temporary.
+The console interface is temporary. Later, it can be replaced with a web interface without having to rewrite the main poker logic.
 
-The long-term goal is to replace it with a web interface without having to rewrite the core poker logic.
+## Development Status
 
-Development Status
-
-🚧 In development
+🚧 **In development**
 
 Currently working on:
 
-Complete betting system
-Call
-Check
-Fold
-Betting rounds
-Flop, turn, and river
-Hand evaluation
-Showdown
-Winner determination
-Web interface
-Technologies
-Java
-Object-Oriented Programming
-Git
-GitHub
-Future Plans
+* Complete betting system
+* Call
+* Check
+* Fold
+* All-in
+* Betting rounds
+* Flop, turn, and river
+* Hand evaluation
+* Hand comparison
+* Showdown
+* Winner determination
+* Web interface
 
-The final version is planned to include an interactive web-based Texas Hold'em game with:
+## Technologies
 
-Web-based player interface
-Multiple players
-Complete Texas Hold'em rules
-Betting rounds
-Hand evaluation
-Game state management
-Backend API
-Persistent game/session management
+* Java
+* Object-Oriented Programming
+* Git
+* GitHub
+
+## Future Plans
+
+The final goal is to turn this into a playable web-based Texas Hold'em game with:
+
+* Web-based player interface
+* Multiple players
+* Complete Texas Hold'em rules
+* Betting rounds
+* Hand evaluation
+* Game state management
+* Backend API
+* Persistent game/session management
